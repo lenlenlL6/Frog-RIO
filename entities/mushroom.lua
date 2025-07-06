@@ -39,7 +39,8 @@ function mushroom:new(x, y, options, world)
         death = false,
         moveTimer = 2,
         idleTimer = 0,
-        targetVX = 0
+        targetVX = 0,
+        changeDirection = false
     }
     object.currentAnimation = object.animations.idle
 
@@ -65,24 +66,30 @@ function mushroom:new(x, y, options, world)
             end
             return
         end
-
-        if col2.collision_class == "platform" and nx ~= 0 and object.moveTimer == 0 then
-            local object = col1:getObject()
-            if object.idleFlux then object.idleFlux:stop() end
-            if object.moveFlux then object.moveFlux:stop() end
-            object.idleFlux = nil
-            object.moveFlux = nil
-
-            object.idleTimer = 0
-            object.moveTimer = 2
-        end
     end)
-    object.currentX = object.collider:getX()
 
     return setmetatable(object, {__index = self})
 end
 
 function mushroom:update(dt)
+    if self.collider:enter("platform") then
+        local contact = self.collider:getEnterCollisionData("platform").contact
+
+        local nx, _ = contact:getNormal()
+        if nx ~= 0 and not self.changeDirection then
+            if self.idleFlux then self.idleFlux:stop() end
+            if self.moveFlux then self.moveFlux:stop() end
+            self.idleFlux = nil
+            self.moveFlux = nil
+
+            self.idleTimer = 0
+            self.moveTimer = 2
+
+            self.changeDirection = true
+        end
+        print("Contact")
+    end
+
     self.currentAnimation.animation:update(dt)
     flux.update(dt)
 
@@ -101,6 +108,10 @@ function mushroom:update(dt)
 
     if self.moveTimer == 0 and not self.idleFlux then
         self.targetVX = math.random(-100, 100)
+        if self.changeDirection then
+            self.targetVX = (self.direction == 1) and math.random(-100, -50) or math.random(50, 100)
+            self.changeDirection = false
+        end
         self.idleFlux = flux.to(self, 4, {idleTimer = 0}):oncomplete(function()
             self.idleFlux = nil
             self.moveTimer = 2
