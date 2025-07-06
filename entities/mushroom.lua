@@ -87,7 +87,6 @@ function mushroom:update(dt)
 
             self.changeDirection = true
         end
-        print("Contact")
     end
 
     self.currentAnimation.animation:update(dt)
