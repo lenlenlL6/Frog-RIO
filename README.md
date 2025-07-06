@@ -1,7 +1,7 @@
 <p align="center"><img src="./icon.png" width="100" alt="til" /><h1 align="center">Frog:RIO</h1>
 <p align="center"><a href="#project-description">Project Description</a> - <a href="#key-features">Key Features</a> - <a href="#libraries">Libraries</a></p>
 
-<p align="center"><img src="./demo.gif" alt="til" />
+<p align="center"><img src="./Screenshot 2025-07-06 195642.png" alt="til" />
 
 ## Project Description
 
