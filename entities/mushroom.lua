@@ -56,9 +56,7 @@ function mushroom:new(x, y, options, world)
 
         local nx, ny = contact:getNormal()
 
-        if col2.collision_class == "player" then
-            contact:setEnabled(false)
-
+        if col2.collision_class == "player" and not col2:getObject().death then
             if ny < 0 then
                 col1:getObject():kill()
             else
@@ -155,7 +153,7 @@ function mushroom:draw()
     love.graphics.translate(x, y)
     love.graphics.rotate(self.rotation)
     love.graphics.translate(-x, -y)
-    self.currentAnimation.animation:draw(self.currentAnimation.image, x - 32, y - 48, 0, 2*self.direction, 2, (self.direction == 1) and 0 or 32)
+    self.currentAnimation.animation:draw(self.currentAnimation.image, x - 44, y - 48, 0, 2*self.direction, 2, (self.direction == 1) and 0 or 32)
     love.graphics.pop()
 
     -- love.graphics.print(self.idleTimer .. " | " .. self.moveTimer, 0, 300)
