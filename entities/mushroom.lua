@@ -68,6 +68,12 @@ function mushroom:new(x, y, options, world)
         end
     end)
 
+    local dustImage = love.graphics.newImage("assets/Other/Dust Particle.png")
+    object.pSystem = love.graphics.newParticleSystem(dustImage)
+    object.pSystem:setParticleLifetime(0.5, 0.8)
+    object.pSystem:setEmissionRate(2)
+    object.pSystem:setColors(1, 1, 1, 1, 1, 1, 1, 0)
+    -- object.pSystem:setLinearAcceleration(10, -250, 50, 0)
     return setmetatable(object, {__index = self})
 end
 
@@ -91,6 +97,7 @@ function mushroom:update(dt)
 
     self.currentAnimation.animation:update(dt)
     flux.update(dt)
+    self.pSystem:update(dt)
 
     if self.death then
         self.currentAnimation = self.animations.hit
@@ -121,14 +128,25 @@ function mushroom:update(dt)
     if self.idleTimer == 0 then
         self.currentAnimation = self.animations.idle
         self.collider:setLinearVelocity(0, vy)
+
+        self.pSystem:stop()
     elseif self.moveTimer == 0 then
         self.direction = (self.targetVX < 0) and -1 or 1
         self.currentAnimation = self.animations.run
         self.collider:setLinearVelocity(self.targetVX, vy)
+
+        self.pSystem:setPosition(self.collider:getX(), self.collider:getY() + 16)
+        if self.direction == 1 then
+            self.pSystem:setLinearAcceleration(-200, -50, -100, -30)
+        else
+            self.pSystem:setLinearAcceleration(100, -50, 200, -30)
+        end
+        self.pSystem:start()
     end
 end
 
 function mushroom:draw()
+    love.graphics.draw(self.pSystem)
     if self.collider:isDestroyed() then return end
 
     local x, y = self.collider:getPosition()
