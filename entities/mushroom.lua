@@ -1,5 +1,3 @@
-math.randomseed(os.time())
-
 local anim8 = require("libraries.anim8")
 local flux = require("libraries.flux")
 local mushroom = {}
@@ -111,9 +109,9 @@ function mushroom:update(dt)
     end
 
     if self.moveTimer == 0 and not self.idleFlux then
-        self.targetVX = math.random(-100, 100)
+        self.targetVX = love.math.random(-100, 100)
         if self.changeDirection then
-            self.targetVX = (self.direction == 1) and math.random(-100, -50) or math.random(50, 100)
+            self.targetVX = (self.direction == 1) and love.math.random(-100, -50) or love.math.random(50, 100)
             self.changeDirection = false
         end
         self.idleFlux = flux.to(self, 4, {idleTimer = 0}):oncomplete(function()
