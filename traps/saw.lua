@@ -61,7 +61,6 @@ function saw:update(dt)
         end)
     end
 
-    flux.update(dt)
     self.currentAnimation.animation:update(dt)
     self.collider:setX(self.currentPosition.x)
     self.collider:setY(self.currentPosition.y)

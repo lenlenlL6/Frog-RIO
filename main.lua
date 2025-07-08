@@ -1,4 +1,5 @@
 love.graphics.setDefaultFilter("nearest", "nearest")
+local flux = require("libraries.flux")
 local manager = require("libraries.roomy").new()
 local managerChannel = love.thread.getChannel("managerChannel")
 local scenes = {
@@ -26,6 +27,7 @@ function love.update(dt)
         manager:enter(scenes[message.scene], message.args)
     end
 
+    flux.update(dt)
     manager:emit("update", dt)
 end
 

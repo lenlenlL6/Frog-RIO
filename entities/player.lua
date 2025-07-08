@@ -125,7 +125,6 @@ end
 
 function player:update(dt)
     self.currentAnimation.animation:update(dt)
-    flux.update(dt)
     self.pSystem:update(dt)
 
     if self.death then return end

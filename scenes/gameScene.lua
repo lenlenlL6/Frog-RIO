@@ -19,7 +19,9 @@ local FRUIT_SCORE = {
     ["6"] = 50
 }
 local ENTITY_ID = {
-    ["1"] = require("entities.mushroom")
+    ["1"] = require("entities.mushroom"),
+    ["2"] = require("entities.ghost"),
+    ["3"] = require("entities.fatBird")
 }
 
 local scene = {}
@@ -86,7 +88,6 @@ end
 
 function scene:update(dt)
     if self.transition then
-        flux.update(dt)
         return
     end
 
@@ -145,9 +146,9 @@ function scene:draw()
         v:draw()
     end
 
-    self.world:draw()
+    -- self.world:draw()
     
-    love.graphics.print("Traps: " .. #self.traps .. " | Fruits: " .. #self.fruits .. " Entities: " .. #self.entities .. " | Draw Call: " .. love.graphics.getStats().drawcalls .. " | Fps: " .. love.timer.getFPS())
+    -- love.graphics.print("Traps: " .. #self.traps .. " | Fruits: " .. #self.fruits .. " Entities: " .. #self.entities .. " | Draw Call: " .. love.graphics.getStats().drawcalls .. " | Fps: " .. love.timer.getFPS())
 
     if not self.transition then
         return

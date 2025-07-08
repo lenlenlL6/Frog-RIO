@@ -21,7 +21,6 @@ end
 
 function scene:update(dt)
     if self.transition then
-        flux.update(dt)
         return
     end
 end

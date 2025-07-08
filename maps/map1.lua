@@ -10,7 +10,7 @@ return {
   tilewidth = 16,
   tileheight = 16,
   nextlayerid = 8,
-  nextobjectid = 43,
+  nextobjectid = 46,
   properties = {
     ["background"] = "Brown"
   },
@@ -128,32 +128,7 @@ return {
       parallaxx = 1,
       parallaxy = 1,
       properties = {},
-      objects = {
-        {
-          id = 41,
-          name = "",
-          type = "",
-          shape = "polygon",
-          x = 128,
-          y = 192,
-          width = 0,
-          height = 0,
-          rotation = 0,
-          visible = true,
-          polygon = {
-            { x = 0, y = 0 },
-            { x = 16, y = 0 },
-            { x = 32, y = 0 },
-            { x = 48, y = 0 },
-            { x = 64, y = 0 },
-            { x = 64, y = 16 },
-            { x = 64, y = 32 }
-          },
-          properties = {
-            ["id"] = "3"
-          }
-        }
-      }
+      objects = {}
     },
     {
       type = "objectgroup",
@@ -450,12 +425,12 @@ return {
       properties = {},
       objects = {
         {
-          id = 42,
+          id = 45,
           name = "",
           type = "",
           shape = "point",
-          x = 152.333,
-          y = 259.333,
+          x = 147.333,
+          y = 260.334,
           width = 0,
           height = 0,
           rotation = 0,
