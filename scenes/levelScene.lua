@@ -1,5 +1,6 @@
 local managerChannel = love.thread.getChannel("managerChannel")
 local sti = require("libraries.sti")
+local json = require("libraries.json")
 local flux = require("libraries.flux")
 local button__ = require("ui.button")
 local slider__ = require("ui.slider")
@@ -25,13 +26,13 @@ function scene:enter(previous, args)
     self.map = sti("maps/menu.lua")
 
     self.buttons = {}
-    self.buttons.play = button__:new(self.screenWidth/2 - 121/2, self.screenHeight/2 - 122/2, 121, 122, love.graphics.newImage("assets/Menu/Buttons/Play.png"))
-    self.buttons.play.onClick = function()
+    self.buttons.quit = button__:new(10, self.screenHeight - 52 - 10, 51, 52, love.graphics.newImage("assets/Menu/Buttons/Restart.png"))
+    self.buttons.quit.onClick = function()
         self.transition = true
         self.transitionScale = {0}
         flux.to(self.transitionScale, 1, {32}):oncomplete(function()
             managerChannel:push({
-                scene = "level",
+                scene = "menu",
                 args = {
                     transition = true,
                     transitionScale = {32},
@@ -40,11 +41,39 @@ function scene:enter(previous, args)
             })
         end)
     end
-    self.buttons.quit = button__:new(10, self.screenHeight - 52 - 10, 51, 52, love.graphics.newImage("assets/Menu/Buttons/Restart.png"))
-    self.buttons.quit.onClick = function() love.event.quit() end
     self.buttons.volume = slider__:new(self.screenWidth - 51 - 10, self.screenHeight - 52 - 10, 51, 52, love.graphics.newImage("assets/Menu/Buttons/Volume.png"), 51, 100)
+    
+    self.levelData = json.decode(love.filesystem.read("levelData.json"))
 
-    self.title = love.graphics.newText(love.graphics.getFont(), "FROG:RIO")
+    self.levels = {}
+    local maxLevel = self.levelData.maxLevel
+    local levelPerCell = 4
+    local totalWidth = levelPerCell*89 + (levelPerCell - 1)*10
+    local startX, startY = self.screenWidth/2 - totalWidth/2, 250
+    for i = 0, maxLevel - 1 do
+        local button = button__:new(startX + (i%levelPerCell)*89 + (i%levelPerCell)*10, startY + (math.floor(i/levelPerCell))*87 + (math.floor(i/levelPerCell))*10, 89, 87,
+                                    love.graphics.newImage("assets/Menu/Levels/" .. ((i + 1 < 10) and ("0"..(i + 1)) or (i + 1)) .. ".png"))
+        button.onClick = function()
+            if i + 1 > #self.levelData.unlockedLevel then return end
+
+            self.transition = true
+            self.transitionScale = {0}
+            flux.to(self.transitionScale, 1, {32}):oncomplete(function()
+                managerChannel:push({
+                    scene = "game",
+                    args = {
+                        transition = true,
+                        transitionScale = {32},
+                        transitionDir = -1,
+                        map = "maps/map" .. (i + 1) .. ".lua"
+                    }
+                })
+            end)
+        end
+        table.insert(self.levels, button)
+    end
+
+    self.title = love.graphics.newText(love.graphics.getFont(), "SELECT LEVEL")
     self.titleAlpha = 1
 end
 
@@ -60,13 +89,20 @@ function scene:update(dt)
     for _, button in pairs(self.buttons) do
         button:update()
     end
+    for _, button in pairs(self.levels) do
+        button:update()
+    end
 end
 
 function scene:draw()
     self.map:draw(0, -20, 2, 2)
 
-    for _, button in pairs(self.buttons) do
+    for i, button in pairs(self.buttons) do
         button:draw()
+    end
+
+    for i, button in pairs(self.levels) do
+        button:draw(i > #self.levelData.unlockedLevel and {1, 1, 1, 0.5} or nil)
     end
     love.graphics.setColor(1, 1, 1, self.titleAlpha)
     love.graphics.draw(self.title, self.screenWidth/2 - self.title:getWidth()/2, 100)
@@ -88,6 +124,10 @@ function scene:mousepressed(x, y, button, istouch, presses)
     end
 
     for _, btn in pairs(self.buttons) do
+        btn:mousepressed(x, y, button)
+    end
+
+    for _, btn in pairs(self.levels) do
         btn:mousepressed(x, y, button)
     end
 
@@ -129,6 +169,12 @@ function scene:leave()
     end
     self.buttons = nil
 
+    self.levelData = nil
+    for _, button in pairs(self.levels) do
+        button:release()
+    end
+    self.levels = nil
+
     self.title:release()
     self.title = nil
     self.titleAlpha = nil
@@ -136,7 +182,7 @@ function scene:leave()
     self.decreaseFlux = nil
     collectgarbage("collect")
 
-    -- print("Garbage Collected: Menu")
+    -- print("Garbage Collected: Level")
 end
 
 return scene

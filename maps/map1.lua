@@ -9,8 +9,8 @@ return {
   height = 20,
   tilewidth = 16,
   tileheight = 16,
-  nextlayerid = 8,
-  nextobjectid = 46,
+  nextlayerid = 9,
+  nextobjectid = 50,
   properties = {
     ["background"] = "Brown"
   },
@@ -425,20 +425,49 @@ return {
       properties = {},
       objects = {
         {
-          id = 45,
+          id = 49,
           name = "",
           type = "",
           shape = "point",
-          x = 147.333,
-          y = 260.334,
+          x = 187.5,
+          y = 235,
           width = 0,
           height = 0,
           rotation = 0,
           visible = true,
           properties = {
-            ["direction"] = 1,
-            ["id"] = "1"
+            ["direction"] = -1,
+            ["id"] = "4"
           }
+        }
+      }
+    },
+    {
+      type = "objectgroup",
+      draworder = "topdown",
+      id = 8,
+      name = "Destination",
+      class = "",
+      visible = false,
+      opacity = 1,
+      offsetx = 0,
+      offsety = 0,
+      parallaxx = 1,
+      parallaxy = 1,
+      properties = {},
+      objects = {
+        {
+          id = 48,
+          name = "",
+          type = "",
+          shape = "point",
+          x = 368,
+          y = 208,
+          width = 0,
+          height = 0,
+          rotation = 0,
+          visible = true,
+          properties = {}
         }
       }
     }
