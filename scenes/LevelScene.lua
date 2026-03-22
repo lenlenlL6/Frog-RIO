@@ -178,7 +178,7 @@ function LevelScene:draw()
     for _, enemy in ipairs(self.enemies) do enemy:draw() end
     checkpointAnimation:draw(checkpointImage, self.checkpointPosition.x - 64, self.checkpointPosition.y - 126, 0, 2, 2)
 
-    self.world:draw()
+    -- self.world:draw()
 
     for _, btn in pairs(self.buttons) do btn:draw() end
 
