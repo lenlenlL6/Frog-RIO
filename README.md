@@ -3,3 +3,6 @@ Frog:RIO is a game built using the [Love2D](https://love2d.org/) framework, asse
 
 # Customize the levels
 Frog:RIO offers level design capabilities. see [Documentation](https://github.com/lenlenlL6/Frog-RIO/wiki) for more information.
+
+# Download
+Download "**FrogRIO.zip**" from the latest [release](https://github.com/lenlenlL6/Frog-RIO/releases). Then extract the files, run FrogRIO.exe, and enjoy!
