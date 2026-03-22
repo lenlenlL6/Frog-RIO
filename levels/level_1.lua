@@ -339,13 +339,16 @@ return {
           name = "",
           type = "",
           shape = "point",
-          x = 224,
-          y = 80,
+          x = 209.333,
+          y = 97.3333,
           width = 0,
           height = 0,
           rotation = 0,
           visible = true,
-          properties = {}
+          properties = {
+            ["delay"] = 2,
+            ["id"] = 3
+          }
         }
       }
     },

@@ -45,7 +45,8 @@ function love.load()
     if not love.filesystem.getInfo("gameData") then
         bitser.dumpLoveFile("gameData", {
             characterId = 1,
-            level = 1
+            level = 1,
+            maxLevel = 3
         })
     end
     GAME_DATA = bitser.loadLoveFile("gameData")
@@ -63,8 +64,10 @@ function love.draw()
     manager:emit("draw")
     love.graphics.print("v" .. VERSION, 0, 586)
 
+    --[[
     love.graphics.print("FPS: " .. love.timer.getFPS())
     love.graphics.print("Draw Calls: " .. love.graphics.getStats().drawcalls, 0, 16)
+    --]]
 end
 
 function love.mousepressed(x, y, button, istouch, presses)

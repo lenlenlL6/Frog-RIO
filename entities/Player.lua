@@ -297,10 +297,12 @@ function Player:draw()
     self.currentAnimation.animation:draw(self.currentAnimation.image, x, y - 40, 0, 2 * self.direction, 2, 16)
     love.graphics.pop()
 
+    --[[
     love.graphics.print("onGround: " .. tostring(self.onGround), x + 32, y - 16)
     love.graphics.print("doubleJumpAnim: " .. tostring(self.doubleJump), x + 32, y)
     love.graphics.print("canDoubleJump: " .. tostring(self.canDoubleJump), x + 32, y + 16)
     love.graphics.print("wallJump: " .. tostring(self.wallJump), x + 32, y + 32)
+    --]]
 end
 
 function Player:keypressed(key)

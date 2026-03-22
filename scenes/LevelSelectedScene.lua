@@ -25,7 +25,7 @@ function LevelSelectedScene:enter(previous, args)
         end
         self.transition.active = true
     end
-    local maxLevel = 11
+    local maxLevel = GAME_DATA.maxLevel
     local levelSize = 120
     local totalWidth = 5 * levelSize + 20
     for i = 0, maxLevel - 1 do

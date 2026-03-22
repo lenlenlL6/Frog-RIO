@@ -1,3 +1,8 @@
+local sqrt = math.sqrt
+local function distance(x1, y1, x2, y2)
+    return sqrt((x2 - x1) ^ 2 + (y2 - y1) ^ 2)
+end
+
 local Button = require("utils.Button")
 local Background = require("utils.Background")
 local Transition = require("utils.Transition")
@@ -8,10 +13,16 @@ local sti = require("libraries.sti")
 local wf = require("libraries.windfield")
 local LevelScene = {}
 
+local leaveImage = love.graphics.newImage("assets/Menu/Buttons/Restart.png")
+local titleFont = love.graphics.newFont("assets/MinecraftRegular.otf", 45)
+local normalFont = love.graphics.newFont("assets/MinecraftRegular.otf", 25)
 local checkpointImage = love.graphics.newImage("assets/Items/Checkpoints/Checkpoint/Checkpoint (Flag Idle)(64x64).png")
 local grid = anim8.newGrid(64, 64, checkpointImage:getWidth(), checkpointImage:getHeight())
 local checkpointAnimation = anim8.newAnimation(grid("1-10", 1), 0.07)
 function LevelScene:enter(previous, args)
+    self.level = args.level
+    self.gameOver = false
+
     Player.resetAllAnimations()
 
     self.transition = Transition:new(-20)
@@ -69,17 +80,56 @@ function LevelScene:enter(previous, args)
         elseif properties.id == 2 then
             table.insert(self.enemies, ENEMY_ID[properties.id]:new(enemy.x * 2, enemy.y * 2, self.world, properties.height * 2, self.player))
         elseif properties.id == 3 then
-            table.insert(self.enemies, ENEMY_ID[properties.id]:new(enemy.x * 2, enemy.y * 2, self.world, properties.delay, self.world))
+            table.insert(self.enemies, ENEMY_ID[properties.id]:new(enemy.x * 2, enemy.y * 2, self.world, properties.delay, self.player))
         end
     end
 
     self.checkpointPosition = self.map.layers["Goal"].objects[1]
     self.checkpointPosition.x, self.checkpointPosition.y = self.checkpointPosition.x * 2, self.checkpointPosition.y * 2
+
+    self.buttons = {}
+    self.buttons.leave = Button:new(745, 5, 50, 50)
+    self.buttons.leave.style = function(button)
+        if button.isHovered then love.graphics.setColor(0.7, 0.7, 0.7) end
+        love.graphics.draw(leaveImage, button.x, button.y, 0, button.width / leaveImage:getWidth(),
+            button.height / leaveImage:getHeight())
+        love.graphics.setColor(1, 1, 1)
+    end
+    self.buttons.leave.onClick = function()
+        self.transition.speed = 20
+        self.transition.onComplete = function()
+            manager:enter(scenes.menu)
+        end
+        self.transition.active = true
+    end
+
+    self.gameOverText = love.graphics.newText(titleFont, "GAME OVER")
+    self.pointsText = love.graphics.newText(normalFont, "Your points: ")
 end
 
 function LevelScene:update(dt)
+    if self.gameOver then
+        for _, btn in pairs(self.buttons) do btn:update(dt) end
+        self.transition:update(dt)
+       return
+    end
     self.background:update(dt)
     self.player:update(dt)
+    local playerX, playerY = self.player.collider:getPosition()
+    if playerY > 650 then
+        self.gameOver = true
+        self.pointsText:set("Your points: " .. self.player.points)
+        return
+    end
+    if distance(playerX, playerY, self.checkpointPosition.x, self.checkpointPosition.y) <= 35 then
+        self.gameOver = true
+        self.gameOverText:set("LEVEL COMPLETED")
+        self.pointsText:set("Your points: " .. self.player.points)
+
+        if self.level == GAME_DATA.level and GAME_DATA.level + 1 <= GAME_DATA.maxLevel then
+            GAME_DATA.level = GAME_DATA + 1
+        end
+    end
     for i, trap in ipairs(self.traps) do
         trap:update(dt)
         if trap.canBeDestroy then
@@ -97,16 +147,25 @@ function LevelScene:update(dt)
     for i, enemy in ipairs(self.enemies) do
         enemy:update(dt)
         if enemy.collider:getY() > 750 then
+            if enemy.bullets then
+                for _, bul in ipairs(enemy.bullets) do
+                    bul.collider:destroy()
+                    bul.bulletParticle:release()
+                end
+                enemy.bullets = nil
+            end
             enemy.collider:destroy()
             table.remove(self.enemies, i)
         end
     end
     checkpointAnimation:update(dt)
+    for _, btn in pairs(self.buttons) do btn:update(dt) end
     self.world:update(dt)
     self.transition:update(dt)
 end
 
 function LevelScene:draw()
+    if self.gameOver then love.graphics.setColor(0.5, 0.5, 0.5) end
     self.background:draw()
     self.map:draw(0, 0, 2, 2)
     self.player:draw()
@@ -115,13 +174,23 @@ function LevelScene:draw()
     for _, enemy in ipairs(self.enemies) do enemy:draw() end
     checkpointAnimation:draw(checkpointImage, self.checkpointPosition.x - 64, self.checkpointPosition.y - 126, 0, 2, 2)
 
-    self.world:draw()
+    -- self.world:draw()
+
+    for _, btn in pairs(self.buttons) do btn:draw() end
+
+    love.graphics.setColor(1, 1, 1)
+    if self.gameOver then
+        love.graphics.draw(self.gameOverText, 400 - self.gameOverText:getWidth() / 2, 240)
+        love.graphics.draw(self.pointsText, 400 - self.pointsText:getWidth() / 2, 300)
+    end
 
     self.transition:draw()
 
+    --[[
     love.graphics.print("Traps: " .. #self.traps, 0, 32)
     love.graphics.print("Fruits: " .. #self.fruits, 0, 48)
     love.graphics.print("Enemies: " .. #self.enemies, 0, 64)
+    --]]
 end
 
 function LevelScene:keypressed(key, scancode, isrepeat)
@@ -132,7 +201,17 @@ function LevelScene:keyreleased(key, scancode)
     self.player:keyreleased(key)
 end
 
+function LevelScene:mousepressed(x, y, button, istouch, presses)
+    for _, btn in pairs(self.buttons) do btn:mousepressed(x, y, button) end
+end
+
+function LevelScene:mousereleased(x, y, button, istouch, presses)
+    for _, btn in pairs(self.buttons) do btn:mousereleased(x, y) end
+end
+
 function LevelScene:leave(next)
+    self.level = nil
+    self.gameOver = nil
     self.transition = nil
     self.map = nil
     self.background = nil
@@ -142,6 +221,12 @@ function LevelScene:leave(next)
     self.traps = nil
     self.fruits = nil
     self.enemies = nil
+    self.checkpointPosition = nil
+    self.buttons = nil
+    self.gameOverText:release()
+    self.gameOverText = nil
+    self.pointsText:release()
+    self.pointsText = nil
 end
 
 return LevelScene
