@@ -4,7 +4,6 @@ _G.love = love
 
 love.graphics.setDefaultFilter("nearest", "nearest")
 love.math.setRandomSeed(os.time())
-
 local bitser = require("libraries.bitser")
 local flux = require("libraries.flux")
 local roomy = require("libraries.roomy")

@@ -7,6 +7,8 @@
 -- under the terms of the MIT license. See LICENSE for details.
 --
 
+--- @diagnostic disable
+
 local flux = { _version = "0.1.5" }
 flux.__index = flux
 
@@ -26,6 +28,7 @@ local easing = {
 }
 
 local makefunc = function(str, expr)
+  --- @diagnostic disable-next-line
   local load = loadstring or load
   return load("return function(p) " .. str:gsub("%$e", expr) .. " end")()
 end
@@ -175,6 +178,7 @@ end
 
 
 function flux:clear(obj, vars)
+  --- @diagnostic disable-next-line
   for t in pairs(self[obj]) do
     if t.inited then
       for k in pairs(vars) do t.vars[k] = nil end

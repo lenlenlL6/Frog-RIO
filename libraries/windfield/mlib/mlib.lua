@@ -15,6 +15,8 @@
 	Contact me at davisclaib@gmail.com
 ]]
 
+--- @diagnostic disable
+
 -- Local Utility Functions ---------------------- {{{
 local unpack = table.unpack or unpack
 
