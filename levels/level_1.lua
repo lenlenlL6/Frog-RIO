@@ -10,7 +10,7 @@ return {
   tilewidth = 16,
   tileheight = 16,
   nextlayerid = 8,
-  nextobjectid = 73,
+  nextobjectid = 78,
   properties = {
     ["background"] = "Green",
     ["backgroundSpeed"] = 15,
@@ -335,19 +335,20 @@ return {
       },
       objects = {
         {
-          id = 68,
+          id = 76,
           name = "",
           type = "",
           shape = "point",
-          x = 209.333,
-          y = 97.3333,
+          x = 224,
+          y = 192,
           width = 0,
           height = 0,
           rotation = 0,
           visible = true,
           properties = {
-            ["delay"] = 2,
-            ["id"] = 3
+            ["direction"] = -1,
+            ["id"] = 4,
+            ["width"] = 110
           }
         }
       }

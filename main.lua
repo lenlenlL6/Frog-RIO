@@ -1,4 +1,4 @@
-local VERSION = "2.0.1"
+local VERSION = "2.0.2"
 
 _G.love = love
 
@@ -27,12 +27,14 @@ _G.TRAP_ID = {
     require("traps.Fire"),
     require("traps.Saw"),
     require("traps.Spike"),
-    require("traps.Trampoline")
+    require("traps.Trampoline"),
+    require("traps.SpikedBall")
 }
 _G.ENEMY_ID = {
     require("entities.AngryPig"),
     require("entities.Bat"),
-    require("entities.Bee")
+    require("entities.Bee"),
+    require("entities.BlueBird")
 }
 _G.GAME_DATA = {}
 

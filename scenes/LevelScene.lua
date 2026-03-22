@@ -64,6 +64,8 @@ function LevelScene:enter(previous, args)
             table.insert(self.traps, TRAP_ID[properties.id]:new(trap.x * 2, trap.y * 2, self.world))
         elseif properties.id == 7 then
             table.insert(self.traps, TRAP_ID[properties.id]:new(trap.x * 2, trap.y * 2, self.world, properties.strength))
+        elseif properties.id == 8 then
+            table.insert(self.traps, TRAP_ID[properties.id]:new(trap.x * 2, trap.y * 2, self.world, properties.radius * 2, properties.range, properties.delay, properties.direction))
         end
     end
 
@@ -81,6 +83,8 @@ function LevelScene:enter(previous, args)
             table.insert(self.enemies, ENEMY_ID[properties.id]:new(enemy.x * 2, enemy.y * 2, self.world, properties.height * 2, self.player))
         elseif properties.id == 3 then
             table.insert(self.enemies, ENEMY_ID[properties.id]:new(enemy.x * 2, enemy.y * 2, self.world, properties.delay, self.player))
+        elseif properties.id == 4 then
+            table.insert(self.enemies, ENEMY_ID[properties.id]:new(enemy.x * 2, enemy.y * 2, self.world, properties.width * 2, properties.direction))
         end
     end
 
@@ -174,7 +178,7 @@ function LevelScene:draw()
     for _, enemy in ipairs(self.enemies) do enemy:draw() end
     checkpointAnimation:draw(checkpointImage, self.checkpointPosition.x - 64, self.checkpointPosition.y - 126, 0, 2, 2)
 
-    -- self.world:draw()
+    self.world:draw()
 
     for _, btn in pairs(self.buttons) do btn:draw() end
 
