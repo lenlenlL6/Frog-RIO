@@ -1,4 +1,7 @@
 local VERSION = "2.0.1"
+
+_G.love = love
+
 love.graphics.setDefaultFilter("nearest", "nearest")
 love.math.setRandomSeed(os.time())
 
