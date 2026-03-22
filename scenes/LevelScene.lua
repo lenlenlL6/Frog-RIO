@@ -55,7 +55,7 @@ function LevelScene:enter(previous, args)
             table.insert(self.traps, TRAP_ID[properties.id]:new(trap.x * 2, trap.y * 2, self.world, properties.strength))
         end
     end
-    
+
     self.fruits = {}
     for _, fruit in ipairs(self.map.layers["Fruit"].objects) do
         table.insert(self.fruits, Fruit:new(fruit.properties.id, fruit.x * 2, fruit.y * 2, self.world, fruit.properties.points))
@@ -68,6 +68,8 @@ function LevelScene:enter(previous, args)
             table.insert(self.enemies, ENEMY_ID[properties.id]:new(enemy.x * 2, enemy.y * 2, self.world, properties.direction, self.player))
         elseif properties.id == 2 then
             table.insert(self.enemies, ENEMY_ID[properties.id]:new(enemy.x * 2, enemy.y * 2, self.world, properties.height * 2, self.player))
+        elseif properties.id == 3 then
+            table.insert(self.enemies, ENEMY_ID[properties.id]:new(enemy.x * 2, enemy.y * 2, self.world, properties.delay, self.world))
         end
     end
 
@@ -116,7 +118,7 @@ function LevelScene:draw()
     self.world:draw()
 
     self.transition:draw()
-    
+
     love.graphics.print("Traps: " .. #self.traps, 0, 32)
     love.graphics.print("Fruits: " .. #self.fruits, 0, 48)
     love.graphics.print("Enemies: " .. #self.enemies, 0, 64)
